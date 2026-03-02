@@ -1,0 +1,50 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Barlow:wght@300;400;500;600;700&display=swap');
+
+:root {
+  --navy: #1a2332;
+  --navy-light: #243044;
+  --navy-lighter: #2d3d56;
+  --gold: #B8860B;
+  --gold-light: #D4A017;
+}
+
+body {
+  font-family: 'Barlow', sans-serif;
+  background: var(--navy);
+  color: #e2e8f0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Oswald', sans-serif;
+}
+
+/* Glassmorphism card */
+.glass {
+  background: rgba(36, 48, 68, 0.6);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(184, 134, 11, 0.15);
+  border-radius: 12px;
+}
+
+.glass-hover:hover {
+  background: rgba(36, 48, 68, 0.8);
+  border-color: rgba(184, 134, 11, 0.3);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--navy); }
+::-webkit-scrollbar-thumb { background: var(--navy-lighter); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--gold); }
+
+/* Stage colors */
+.stage-lead { border-left: 3px solid #6B7280; }
+.stage-qualified { border-left: 3px solid #3B82F6; }
+.stage-design { border-left: 3px solid #8B5CF6; }
+.stage-permitting { border-left: 3px solid #F59E0B; }
+.stage-production { border-left: 3px solid #10B981; }
+.stage-delivered { border-left: 3px solid #B8860B; }
