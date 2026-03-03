@@ -55,27 +55,28 @@ export default function ShareModal({ open, onClose }: Props) {
     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={onClose}>
       <div className="glass w-full max-w-md p-6" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-xl font-bold" style={{ fontFamily: 'Oswald' }}>Share Pipeline</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-white text-xl">✕</button>
+          <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-heading)' }}>Share Pipeline</h2>
+          <button onClick={onClose} className="text-xl" style={{ color: 'var(--text-secondary)' }}>✕</button>
         </div>
 
         {/* Audience picker */}
         <div className="mb-4">
-          <label className="text-sm text-gray-400 mb-2 block">Who&apos;s this for?</label>
+          <label className="text-sm mb-2 block" style={{ color: 'var(--text-secondary)' }}>Who&apos;s this for?</label>
           <div className="grid grid-cols-2 gap-2">
             {audiences.map(a => (
               <button
                 key={a.id}
                 onClick={() => { setAudience(a.id); setLink(''); }}
-                className={`p-3 rounded-lg text-left transition-all ${
-                  audience === a.id
-                    ? 'bg-[#B8860B]/20 border border-[#B8860B]'
-                    : 'bg-white/5 border border-transparent hover:bg-white/10'
-                }`}
+                className="p-3 text-left transition-all"
+                style={{
+                  borderRadius: 'var(--radius-md)',
+                  background: audience === a.id ? 'var(--accent-subtle)' : 'var(--bg-input)',
+                  border: audience === a.id ? '1px solid var(--accent-border)' : '1px solid transparent',
+                }}
               >
                 <div className="text-lg mb-1">{a.icon}</div>
-                <div className="text-sm font-medium">{a.label}</div>
-                <div className="text-xs text-gray-500">{a.desc}</div>
+                <div className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{a.label}</div>
+                <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{a.desc}</div>
               </button>
             ))}
           </div>
@@ -84,20 +85,22 @@ export default function ShareModal({ open, onClose }: Props) {
         {/* Options */}
         <div className="space-y-3 mb-6">
           <div>
-            <label className="text-sm text-gray-400 block mb-1">Password (optional)</label>
+            <label className="text-sm block mb-1" style={{ color: 'var(--text-secondary)' }}>Password (optional)</label>
             <input
               value={password}
               onChange={e => setPassword(e.target.value)}
               placeholder="Leave blank for public"
-              className="w-full bg-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 outline-none"
+              className="w-full px-3 py-2 text-sm outline-none"
+              style={{ background: 'var(--bg-input)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)' }}
             />
           </div>
           <div>
-            <label className="text-sm text-gray-400 block mb-1">Expires</label>
+            <label className="text-sm block mb-1" style={{ color: 'var(--text-secondary)' }}>Expires</label>
             <select
               value={expiry}
               onChange={e => setExpiry(e.target.value)}
-              className="w-full bg-white/10 rounded-lg px-3 py-2 text-sm text-white outline-none"
+              className="w-full px-3 py-2 text-sm outline-none"
+              style={{ background: 'var(--bg-input)', borderRadius: 'var(--radius-sm)', color: 'var(--text-primary)' }}
             >
               <option value="">Never</option>
               <option value="1">24 hours</option>
@@ -112,7 +115,8 @@ export default function ShareModal({ open, onClose }: Props) {
           <button
             onClick={generate}
             disabled={loading}
-            className="w-full py-3 bg-[#B8860B] rounded-lg font-semibold hover:bg-[#D4A017] transition-colors disabled:opacity-50"
+            className="w-full py-3 font-semibold transition-colors disabled:opacity-50"
+            style={{ background: 'var(--accent)', color: 'var(--text-on-accent)', borderRadius: 'var(--radius-sm)' }}
           >
             {loading ? 'Generating...' : 'Generate Share Link'}
           </button>
@@ -122,17 +126,19 @@ export default function ShareModal({ open, onClose }: Props) {
               <input
                 value={link}
                 readOnly
-                className="flex-1 bg-white/10 rounded-lg px-3 py-2 text-sm text-[#B8860B] outline-none"
+                className="flex-1 px-3 py-2 text-sm outline-none"
+                style={{ background: 'var(--bg-input)', borderRadius: 'var(--radius-sm)', color: 'var(--accent)' }}
               />
               <button
                 onClick={copy}
-                className="px-4 py-2 bg-[#B8860B] rounded-lg text-sm font-medium hover:bg-[#D4A017]"
+                className="px-4 py-2 text-sm font-medium"
+                style={{ background: 'var(--accent)', color: 'var(--text-on-accent)', borderRadius: 'var(--radius-sm)' }}
               >
                 {copied ? '✓' : 'Copy'}
               </button>
             </div>
-            <p className="text-xs text-gray-500 text-center">
-              View: {AUDIENCE_VIEW_MAP[audience]} • {password ? 'Password protected' : 'Public'} • {expiry ? `Expires in ${expiry}d` : 'No expiry'}
+            <p className="text-xs text-center" style={{ color: 'var(--text-muted)' }}>
+              View: {AUDIENCE_VIEW_MAP[audience]} &bull; {password ? 'Password protected' : 'Public'} &bull; {expiry ? `Expires in ${expiry}d` : 'No expiry'}
             </p>
           </div>
         )}

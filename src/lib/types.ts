@@ -1,12 +1,12 @@
 export type Stage = 'lead' | 'qualified' | 'design' | 'permitting' | 'production' | 'delivered';
 
 export const STAGES: { id: Stage; label: string; color: string }[] = [
-  { id: 'lead', label: 'Lead', color: '#6B7280' },
-  { id: 'qualified', label: 'Qualified', color: '#3B82F6' },
-  { id: 'design', label: 'Design', color: '#8B5CF6' },
-  { id: 'permitting', label: 'Permitting', color: '#F59E0B' },
-  { id: 'production', label: 'In Production', color: '#10B981' },
-  { id: 'delivered', label: 'Delivered', color: '#B8860B' },
+  { id: 'lead', label: 'Lead', color: 'var(--stage-lead)' },
+  { id: 'qualified', label: 'Qualified', color: 'var(--stage-qualified)' },
+  { id: 'design', label: 'Design', color: 'var(--stage-design)' },
+  { id: 'permitting', label: 'Permitting', color: 'var(--stage-permitting)' },
+  { id: 'production', label: 'In Production', color: 'var(--stage-production)' },
+  { id: 'delivered', label: 'Delivered', color: 'var(--stage-delivered)' },
 ];
 
 export interface Contact {

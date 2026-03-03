@@ -12,7 +12,7 @@ export default function FunnelView({ projects }: Props) {
 
   return (
     <div className="max-w-3xl mx-auto py-8 px-4">
-      <h2 className="text-2xl font-bold text-center mb-8" style={{ fontFamily: 'Oswald' }}>
+      <h2 className="text-2xl font-bold text-center mb-8" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-heading)' }}>
         Pipeline Funnel
       </h2>
       <div className="space-y-3">
@@ -31,19 +31,20 @@ export default function FunnelView({ projects }: Props) {
               </div>
               <div className="flex-1 relative">
                 <div
-                  className="h-14 rounded-lg flex items-center justify-between px-4 transition-all duration-500"
+                  className="h-14 flex items-center justify-between px-4 transition-all duration-500"
                   style={{
                     width: `${widthPct}%`,
-                    background: `${stage.color}30`,
+                    background: `color-mix(in srgb, ${stage.color} 19%, transparent)`,
                     borderLeft: `4px solid ${stage.color}`,
+                    borderRadius: 'var(--radius-sm)',
                   }}
                 >
-                  <span className="text-white font-bold">{count}</span>
-                  <span className="text-sm text-gray-300">{formatCurrency(value)}</span>
+                  <span className="font-bold" style={{ color: 'var(--text-primary)' }}>{count}</span>
+                  <span className="text-sm" style={{ color: 'var(--text-secondary)' }}>{formatCurrency(value)}</span>
                 </div>
               </div>
-              <div className="w-20 text-xs text-gray-500">
-                {dropoff && <span className="text-red-400">↓ {dropoff}%</span>}
+              <div className="w-20 text-xs" style={{ color: 'var(--text-muted)' }}>
+                {dropoff && <span style={{ color: 'var(--red)' }}>↓ {dropoff}%</span>}
               </div>
             </div>
           );
@@ -52,13 +53,13 @@ export default function FunnelView({ projects }: Props) {
 
       {/* Conversion summary */}
       <div className="mt-8 glass p-6 text-center">
-        <div className="text-sm text-gray-400 mb-1">Overall Conversion</div>
-        <div className="text-3xl font-bold text-[#B8860B]" style={{ fontFamily: 'Oswald' }}>
+        <div className="text-sm mb-1" style={{ color: 'var(--text-secondary)' }}>Overall Conversion</div>
+        <div className="text-3xl font-bold" style={{ fontFamily: 'var(--heading-font)', color: 'var(--accent)' }}>
           {projects.length > 0
             ? ((projects.filter(p => p.stage === 'delivered').length / projects.length) * 100).toFixed(0)
             : 0}%
         </div>
-        <div className="text-sm text-gray-500 mt-1">Lead → Delivered</div>
+        <div className="text-sm mt-1" style={{ color: 'var(--text-muted)' }}>Lead → Delivered</div>
       </div>
     </div>
   );

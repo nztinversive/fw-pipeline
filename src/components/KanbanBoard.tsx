@@ -31,14 +31,14 @@ export default function KanbanBoard({ projects, onMove, onSelect }: Props) {
             <div className="flex items-center justify-between mb-3 px-1">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full" style={{ background: stage.color }} />
-                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ fontFamily: 'Oswald' }}>
+                <h3 className="font-semibold text-sm uppercase tracking-wider" style={{ fontFamily: 'var(--heading-font)' }}>
                   {stage.label}
                 </h3>
-                <span className="text-xs bg-white/10 px-2 py-0.5 rounded-full">
+                <span className="text-xs px-2 py-0.5 rounded-full" style={{ background: 'var(--bg-input)', color: 'var(--text-secondary)' }}>
                   {stageProjects.length}
                 </span>
               </div>
-              <span className="text-xs text-[#B8860B]">{formatCurrency(stageValue)}</span>
+              <span className="text-xs" style={{ color: 'var(--accent)' }}>{formatCurrency(stageValue)}</span>
             </div>
 
             {/* Cards */}
@@ -54,7 +54,7 @@ export default function KanbanBoard({ projects, onMove, onSelect }: Props) {
                 </div>
               ))}
               {stageProjects.length === 0 && (
-                <div className="glass p-4 text-center text-gray-500 text-sm border-dashed">
+                <div className="glass p-4 text-center text-sm border-dashed" style={{ color: 'var(--text-muted)' }}>
                   Drop projects here
                 </div>
               )}

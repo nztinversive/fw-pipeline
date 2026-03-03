@@ -39,7 +39,6 @@ export default function ChatWidget({ onDataChange }: Props) {
       });
       const { reply } = await res.json();
       setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
-      // If the message was a mutation, refresh data
       if (/add|move|update|delete|mark/i.test(userMsg)) {
         onDataChange();
       }
@@ -55,18 +54,19 @@ export default function ChatWidget({ onDataChange }: Props) {
       {/* FAB */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full bg-[#B8860B] text-white text-2xl shadow-lg hover:bg-[#D4A017] transition-all z-50 flex items-center justify-center"
+        className="fixed bottom-6 right-6 w-14 h-14 rounded-full text-2xl shadow-lg transition-all z-50 flex items-center justify-center"
+        style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}
       >
         {open ? '✕' : '💬'}
       </button>
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed bottom-24 right-6 w-96 h-[500px] glass flex flex-col z-40 shadow-2xl">
+        <div className="fixed bottom-24 right-6 w-96 h-[500px] glass flex flex-col z-40" style={{ boxShadow: 'var(--shadow-elevated)' }}>
           {/* Header */}
-          <div className="p-4 border-b border-white/10 flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-            <span className="font-semibold text-sm" style={{ fontFamily: 'Oswald' }}>Pipeline Assistant</span>
+          <div className="p-4 border-b flex items-center gap-2" style={{ borderColor: 'var(--border)' }}>
+            <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--green)' }} />
+            <span className="font-semibold text-sm" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-primary)' }}>Pipeline Assistant</span>
           </div>
 
           {/* Messages */}
@@ -74,12 +74,13 @@ export default function ChatWidget({ onDataChange }: Props) {
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
-                  className={`max-w-[80%] px-3 py-2 rounded-lg text-sm ${
-                    m.role === 'user'
-                      ? 'bg-[#B8860B]/30 text-white'
-                      : 'bg-white/10 text-gray-200'
-                  }`}
-                  style={{ whiteSpace: 'pre-wrap' }}
+                  className="max-w-[80%] px-3 py-2 text-sm"
+                  style={{
+                    background: m.role === 'user' ? 'var(--accent-subtle)' : 'var(--bg-input)',
+                    color: m.role === 'user' ? 'var(--text-primary)' : 'var(--text-secondary)',
+                    borderRadius: 'var(--radius-md)',
+                    whiteSpace: 'pre-wrap',
+                  }}
                   dangerouslySetInnerHTML={{
                     __html: m.content
                       .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
@@ -90,7 +91,7 @@ export default function ChatWidget({ onDataChange }: Props) {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="bg-white/10 px-3 py-2 rounded-lg text-sm text-gray-400">
+                <div className="px-3 py-2 text-sm" style={{ background: 'var(--bg-input)', color: 'var(--text-muted)', borderRadius: 'var(--radius-md)' }}>
                   Thinking...
                 </div>
               </div>
@@ -99,18 +100,28 @@ export default function ChatWidget({ onDataChange }: Props) {
           </div>
 
           {/* Input */}
-          <div className="p-3 border-t border-white/10 flex gap-2">
+          <div className="p-3 border-t flex gap-2" style={{ borderColor: 'var(--border)' }}>
             <input
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === 'Enter' && send()}
               placeholder="Ask about the pipeline..."
-              className="flex-1 bg-white/10 rounded-lg px-3 py-2 text-sm text-white placeholder-gray-500 outline-none focus:ring-1 focus:ring-[#B8860B]"
+              className="flex-1 px-3 py-2 text-sm outline-none"
+              style={{
+                background: 'var(--bg-input)',
+                color: 'var(--text-primary)',
+                borderRadius: 'var(--radius-sm)',
+              }}
             />
             <button
               onClick={send}
               disabled={loading}
-              className="px-3 py-2 bg-[#B8860B] rounded-lg text-sm font-medium hover:bg-[#D4A017] transition-colors disabled:opacity-50"
+              className="px-3 py-2 text-sm font-medium transition-colors disabled:opacity-50"
+              style={{
+                background: 'var(--accent)',
+                color: 'var(--text-on-accent)',
+                borderRadius: 'var(--radius-sm)',
+              }}
             >
               Send
             </button>

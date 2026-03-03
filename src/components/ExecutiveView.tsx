@@ -14,10 +14,10 @@ export default function ExecutiveView({ projects }: Props) {
     <div className="max-w-5xl mx-auto py-8 px-4">
       {/* Header */}
       <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold text-[#B8860B]" style={{ fontFamily: 'Oswald' }}>
+        <h2 className="text-3xl font-bold" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-heading)' }}>
           Fading West Pipeline
         </h2>
-        <p className="text-gray-400 mt-1">{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+        <p className="mt-1" style={{ color: 'var(--text-secondary)' }}>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
       </div>
 
       {/* KPI Cards */}
@@ -30,17 +30,17 @@ export default function ExecutiveView({ projects }: Props) {
         ].map(kpi => (
           <div key={kpi.label} className="glass p-5 text-center">
             <div className="text-2xl mb-2">{kpi.icon}</div>
-            <div className="text-2xl font-bold text-white" style={{ fontFamily: 'Oswald' }}>
+            <div className="text-2xl font-bold" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-primary)' }}>
               {kpi.value}
             </div>
-            <div className="text-sm text-gray-400 mt-1">{kpi.label}</div>
+            <div className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>{kpi.label}</div>
           </div>
         ))}
       </div>
 
       {/* Stage Distribution */}
       <div className="glass p-6 mb-8">
-        <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'Oswald' }}>
+        <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-primary)' }}>
           Stage Distribution
         </h3>
         <div className="space-y-3">
@@ -50,15 +50,19 @@ export default function ExecutiveView({ projects }: Props) {
             return (
               <div key={stage.id} className="flex items-center gap-3">
                 <div className="w-24 text-sm" style={{ color: stage.color }}>{stage.label}</div>
-                <div className="flex-1 bg-white/5 rounded-full h-6 overflow-hidden">
+                <div className="flex-1 h-6 overflow-hidden" style={{ background: 'var(--bg-input)', borderRadius: 'var(--radius-lg)' }}>
                   <div
-                    className="h-full rounded-full flex items-center px-3 transition-all duration-700"
-                    style={{ width: `${Math.max(pct, 5)}%`, background: `${stage.color}80` }}
+                    className="h-full flex items-center px-3 transition-all duration-700"
+                    style={{
+                      width: `${Math.max(pct, 5)}%`,
+                      background: `color-mix(in srgb, ${stage.color} 50%, transparent)`,
+                      borderRadius: 'var(--radius-lg)',
+                    }}
                   >
-                    <span className="text-xs font-medium text-white">{count}</span>
+                    <span className="text-xs font-medium" style={{ color: 'var(--text-primary)' }}>{count}</span>
                   </div>
                 </div>
-                <div className="w-24 text-right text-sm text-[#B8860B]">{formatCurrency(value)}</div>
+                <div className="w-24 text-right text-sm" style={{ color: 'var(--accent)' }}>{formatCurrency(value)}</div>
               </div>
             );
           })}
@@ -69,7 +73,7 @@ export default function ExecutiveView({ projects }: Props) {
       <div className="grid md:grid-cols-2 gap-4">
         {/* Risk */}
         <div className="glass p-6">
-          <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'Oswald' }}>
+          <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-primary)' }}>
             Risk Summary
           </h3>
           <div className="space-y-3">
@@ -79,18 +83,18 @@ export default function ExecutiveView({ projects }: Props) {
             </div>
             <div className="flex items-center justify-between">
               <span className="flex items-center gap-2">🟡 At Risk</span>
-              <span className="font-bold text-yellow-400">{stats.atRisk}</span>
+              <span className="font-bold" style={{ color: 'var(--yellow)' }}>{stats.atRisk}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="flex items-center gap-2">🔴 Blocked</span>
-              <span className="font-bold text-red-400">{stats.blocked}</span>
+              <span className="font-bold" style={{ color: 'var(--red)' }}>{stats.blocked}</span>
             </div>
           </div>
         </div>
 
         {/* Top Projects */}
         <div className="glass p-6">
-          <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'Oswald' }}>
+          <h3 className="text-lg font-semibold mb-4" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-primary)' }}>
             Top Projects by Value
           </h3>
           <div className="space-y-3">
@@ -100,10 +104,10 @@ export default function ExecutiveView({ projects }: Props) {
               .map((p, i) => (
                 <div key={p.id} className="flex items-center justify-between text-sm">
                   <span>
-                    <span className="text-gray-500 mr-2">{i + 1}.</span>
-                    {p.name}
+                    <span className="mr-2" style={{ color: 'var(--text-muted)' }}>{i + 1}.</span>
+                    <span style={{ color: 'var(--text-primary)' }}>{p.name}</span>
                   </span>
-                  <span className="text-[#B8860B] font-semibold">{formatCurrency(p.estimatedValue)}</span>
+                  <span className="font-semibold" style={{ color: 'var(--accent)' }}>{formatCurrency(p.estimatedValue)}</span>
                 </div>
               ))}
           </div>
@@ -111,8 +115,8 @@ export default function ExecutiveView({ projects }: Props) {
       </div>
 
       {/* Footer */}
-      <div className="text-center mt-8 text-xs text-gray-600">
-        Powered by Fading West • Updated {new Date().toLocaleDateString()}
+      <div className="text-center mt-8 text-xs" style={{ color: 'var(--text-muted)' }}>
+        Powered by Fading West &bull; Updated {new Date().toLocaleDateString()}
       </div>
     </div>
   );

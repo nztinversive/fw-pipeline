@@ -38,15 +38,15 @@ export default function TimelineView({ projects }: Props) {
 
   return (
     <div className="max-w-6xl mx-auto py-8 px-4">
-      <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'Oswald' }}>Project Timeline</h2>
+      <h2 className="text-2xl font-bold mb-6" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-heading)' }}>Project Timeline</h2>
 
       {/* Month markers */}
       <div className="relative h-8 mb-2">
         {months.map((m, i) => (
           <div
             key={i}
-            className="absolute text-xs text-gray-500 -translate-x-1/2"
-            style={{ left: `${m.pct}%` }}
+            className="absolute text-xs -translate-x-1/2"
+            style={{ left: `${m.pct}%`, color: 'var(--text-muted)' }}
           >
             {m.label}
           </div>
@@ -57,10 +57,10 @@ export default function TimelineView({ projects }: Props) {
       <div className="relative">
         {/* Today marker */}
         <div
-          className="absolute top-0 bottom-0 w-0.5 bg-red-500/50 z-10"
-          style={{ left: `${dateToPercent(now.toISOString())}%` }}
+          className="absolute top-0 bottom-0 w-0.5 z-10"
+          style={{ left: `${dateToPercent(now.toISOString())}%`, background: 'var(--red)', opacity: 0.5 }}
         >
-          <div className="absolute -top-5 -translate-x-1/2 text-xs text-red-400">Today</div>
+          <div className="absolute -top-5 -translate-x-1/2 text-xs" style={{ color: 'var(--red)' }}>Today</div>
         </div>
 
         {/* Project bars */}
@@ -75,21 +75,23 @@ export default function TimelineView({ projects }: Props) {
 
             return (
               <div key={project.id} className="flex items-center gap-3 h-10">
-                <div className="w-48 text-sm text-right truncate text-gray-300">
+                <div className="w-48 text-sm text-right truncate" style={{ color: 'var(--text-secondary)' }}>
                   {project.name}
                 </div>
                 <div className="flex-1 relative h-8">
                   <div
-                    className="absolute h-full rounded-md flex items-center px-3 text-xs font-medium text-white transition-all"
+                    className="absolute h-full flex items-center px-3 text-xs font-medium transition-all"
                     style={{
                       left: `${start}%`,
                       width: `${width}%`,
-                      background: `${stage?.color}80`,
+                      background: `color-mix(in srgb, ${stage?.color || 'gray'} 50%, transparent)`,
                       borderLeft: `3px solid ${stage?.color}`,
+                      borderRadius: 'var(--radius-sm)',
+                      color: 'var(--text-primary)',
                     }}
                   >
                     <span className="truncate">
-                      {project.unitCount}u • {formatCurrency(project.estimatedValue)}
+                      {project.unitCount}u &bull; {formatCurrency(project.estimatedValue)}
                     </span>
                   </div>
                 </div>
@@ -101,12 +103,20 @@ export default function TimelineView({ projects }: Props) {
         {/* Projects without dates */}
         {projects.filter(p => !p.startDate && !p.estimatedCompletion).length > 0 && (
           <div className="mt-6 glass p-4">
-            <h4 className="text-sm font-semibold text-gray-400 mb-2">No dates set</h4>
+            <h4 className="text-sm font-semibold mb-2" style={{ color: 'var(--text-secondary)' }}>No dates set</h4>
             <div className="flex flex-wrap gap-2">
               {projects.filter(p => !p.startDate && !p.estimatedCompletion).map(p => {
                 const stage = STAGES.find(s => s.id === p.stage);
                 return (
-                  <span key={p.id} className="text-xs px-3 py-1 rounded-full" style={{ background: `${stage?.color}20`, color: stage?.color }}>
+                  <span
+                    key={p.id}
+                    className="text-xs px-3 py-1"
+                    style={{
+                      background: `color-mix(in srgb, ${stage?.color || 'gray'} 13%, transparent)`,
+                      color: stage?.color,
+                      borderRadius: 'var(--radius-lg)',
+                    }}
+                  >
                     {p.name}
                   </span>
                 );
