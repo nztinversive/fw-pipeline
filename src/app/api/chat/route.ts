@@ -165,8 +165,8 @@ Available stages: ${STAGES_LIST.join(', ')}`;
   ];
 
   const response = await client.chat.completions.create({
-    model: 'gpt-4o-mini',
-    max_tokens: 1024,
+    model: 'gpt-5-mini',
+    max_completion_tokens: 1024,
     messages,
     tools,
     tool_choice: 'auto',
@@ -179,6 +179,7 @@ Available stages: ${STAGES_LIST.join(', ')}`;
     const toolResults: Array<{ role: 'tool'; tool_call_id: string; content: string }> = [];
 
     for (const tc of choice.message.tool_calls) {
+      if (tc.type !== 'function') continue;
       const args = JSON.parse(tc.function.arguments);
       let result = '';
 
@@ -213,8 +214,8 @@ Available stages: ${STAGES_LIST.join(', ')}`;
 
     // Send tool results back for final response
     const followUp = await client.chat.completions.create({
-      model: 'gpt-4o-mini',
-      max_tokens: 1024,
+      model: 'gpt-5-mini',
+      max_completion_tokens: 1024,
       messages: [
         ...messages,
         choice.message as { role: 'assistant'; content: string | null },
