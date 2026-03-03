@@ -57,7 +57,7 @@ export default function Home() {
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-5 gap-3">
           <div className="flex items-center gap-4">
             <h1 className="text-xl font-bold flex items-center gap-2.5" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-heading)', letterSpacing: '-0.3px' }}>
-              <img src="/fadingwest-logo.png" alt="Fading West" className="h-8 w-auto" />
+              <img src="/fadingwest-logo.png" alt="Fading West" className="h-8 w-auto" style={{ filter: 'invert(1)' }} />
               Pipeline
             </h1>
             <span className="text-xs px-2.5 py-1 rounded-md font-medium" style={{ color: 'var(--text-muted)', background: 'var(--bg-input)' }}>
