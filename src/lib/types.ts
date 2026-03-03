@@ -81,3 +81,17 @@ export interface PipelineStats {
   atRisk: number;
   blocked: number;
 }
+
+export interface FilterState {
+  searchQuery: string;
+  stages: Stage[];
+  healthStatuses: ('on-track' | 'at-risk' | 'blocked')[];
+  priorities: ('low' | 'medium' | 'high')[];
+}
+
+export const EMPTY_FILTERS: FilterState = {
+  searchQuery: '',
+  stages: [],
+  healthStatuses: [],
+  priorities: [],
+};

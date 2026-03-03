@@ -9,10 +9,10 @@ interface Props {
   compact?: boolean;
 }
 
-const healthIcons: Record<string, string> = {
-  'on-track': '🟢',
-  'at-risk': '🟡',
-  'blocked': '🔴',
+const healthColors: Record<string, string> = {
+  'on-track': 'var(--green)',
+  'at-risk': 'var(--yellow)',
+  'blocked': 'var(--red)',
 };
 
 const priorityColors: Record<string, { bg: string; text: string }> = {
@@ -32,7 +32,7 @@ export default function ProjectCard({ project, onClick, compact }: Props) {
       >
         <div className="flex items-center justify-between mb-1">
           <span className="font-medium text-sm truncate" style={{ color: 'var(--text-primary)' }}>{project.name}</span>
-          <span className="text-xs">{healthIcons[project.healthStatus]}</span>
+          <span className="w-2 h-2 rounded-full" style={{ background: healthColors[project.healthStatus] }} />
         </div>
         <div className="flex items-center justify-between text-xs">
           <span style={{ color: 'var(--text-secondary)' }}>{project.unitCount} units</span>
@@ -49,7 +49,7 @@ export default function ProjectCard({ project, onClick, compact }: Props) {
     >
       <div className="flex items-start justify-between mb-2">
         <h3 className="font-semibold truncate pr-2" style={{ color: 'var(--text-primary)' }}>{project.name}</h3>
-        <span className="text-sm">{healthIcons[project.healthStatus]}</span>
+        <span className="w-2 h-2 rounded-full flex-shrink-0" style={{ background: healthColors[project.healthStatus] }} />
       </div>
       <div className="text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
         {project.location.city}{project.location.state ? `, ${project.location.state}` : ''}
@@ -82,7 +82,7 @@ export default function ProjectCard({ project, onClick, compact }: Props) {
       </div>
       {project.contacts.length > 0 && (
         <div className="mt-2 text-xs" style={{ color: 'var(--text-muted)' }}>
-          📞 {project.contacts[0].name}
+          {project.contacts[0].name}
         </div>
       )}
       {project.notes && (

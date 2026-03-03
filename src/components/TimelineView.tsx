@@ -28,12 +28,15 @@ export default function TimelineView({ projects }: Props) {
   const months: { label: string; pct: number }[] = [];
   const cursor = new Date(minDate);
   cursor.setDate(1);
+  // Show every 3rd month to avoid label crowding
+  let monthIdx = 0;
   while (cursor <= maxDate) {
     const pct = dateToPercent(cursor.toISOString());
-    if (pct >= 0 && pct <= 100) {
+    if (pct >= 0 && pct <= 100 && monthIdx % 3 === 0) {
       months.push({ label: cursor.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }), pct });
     }
     cursor.setMonth(cursor.getMonth() + 1);
+    monthIdx++;
   }
 
   return (
@@ -75,7 +78,7 @@ export default function TimelineView({ projects }: Props) {
 
             return (
               <div key={project.id} className="flex items-center gap-3 h-10">
-                <div className="w-48 text-sm text-right truncate" style={{ color: 'var(--text-secondary)' }}>
+                <div className="w-24 sm:w-48 text-xs sm:text-sm text-right truncate" style={{ color: 'var(--text-secondary)' }}>
                   {project.name}
                 </div>
                 <div className="flex-1 relative h-8">

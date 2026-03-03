@@ -14,7 +14,7 @@ interface Props {
 export default function ChatWidget({ onDataChange }: Props) {
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
-    { role: 'assistant', content: 'Hey! I can help manage the pipeline. Try "pipeline overview" or "add a project".' },
+    { role: 'assistant', content: 'Hey! I can help manage your pipeline. Ask me anything about your projects, or tell me to add and move projects around.' },
   ]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
@@ -28,20 +28,23 @@ export default function ChatWidget({ onDataChange }: Props) {
     if (!input.trim() || loading) return;
     const userMsg = input.trim();
     setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMsg }]);
+    const newMessages: Message[] = [...messages, { role: 'user', content: userMsg }];
+    setMessages(newMessages);
     setLoading(true);
 
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ message: userMsg }),
+        body: JSON.stringify({
+          message: userMsg,
+          history: newMessages.slice(1).slice(-20), // last 20 messages, skip initial greeting
+        }),
       });
       const { reply } = await res.json();
       setMessages(prev => [...prev, { role: 'assistant', content: reply }]);
-      if (/add|move|update|delete|mark/i.test(userMsg)) {
-        onDataChange();
-      }
+      // Always refresh data — AI may have taken actions
+      onDataChange();
     } catch {
       setMessages(prev => [...prev, { role: 'assistant', content: 'Something went wrong. Try again.' }]);
     } finally {
@@ -54,15 +57,15 @@ export default function ChatWidget({ onDataChange }: Props) {
       {/* FAB */}
       <button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 w-14 h-14 rounded-full text-2xl shadow-lg transition-all z-50 flex items-center justify-center"
+        className="chat-fab fixed bottom-4 sm:bottom-6 right-4 sm:right-6 w-12 h-12 sm:w-14 sm:h-14 rounded-full text-2xl shadow-lg transition-all z-50 flex items-center justify-center no-print"
         style={{ background: 'var(--accent)', color: 'var(--text-on-accent)' }}
       >
-        {open ? '✕' : '💬'}
+        {open ? '✕' : <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>}
       </button>
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed bottom-24 right-6 w-96 h-[500px] glass flex flex-col z-40" style={{ boxShadow: 'var(--shadow-elevated)' }}>
+        <div className="chat-panel fixed bottom-20 sm:bottom-24 right-3 sm:right-6 w-[calc(100vw-1.5rem)] sm:w-96 h-[500px] max-h-[70vh] glass flex flex-col z-40 no-print" style={{ boxShadow: 'var(--shadow-elevated)' }}>
           {/* Header */}
           <div className="p-4 border-b flex items-center gap-2" style={{ borderColor: 'var(--border)' }}>
             <div className="w-2 h-2 rounded-full animate-pulse" style={{ background: 'var(--green)' }} />
@@ -91,8 +94,10 @@ export default function ChatWidget({ onDataChange }: Props) {
             ))}
             {loading && (
               <div className="flex justify-start">
-                <div className="px-3 py-2 text-sm" style={{ background: 'var(--bg-input)', color: 'var(--text-muted)', borderRadius: 'var(--radius-md)' }}>
-                  Thinking...
+                <div className="px-3 py-2 text-sm flex items-center gap-1" style={{ background: 'var(--bg-input)', color: 'var(--text-muted)', borderRadius: 'var(--radius-md)' }}>
+                  <span className="inline-block w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: 'var(--text-muted)', animationDelay: '0ms' }} />
+                  <span className="inline-block w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: 'var(--text-muted)', animationDelay: '150ms' }} />
+                  <span className="inline-block w-1.5 h-1.5 rounded-full animate-bounce" style={{ background: 'var(--text-muted)', animationDelay: '300ms' }} />
                 </div>
               </div>
             )}

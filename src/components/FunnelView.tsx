@@ -22,7 +22,7 @@ export default function FunnelView({ projects }: Props) {
           const value = stageProjects.reduce((s, p) => s + p.estimatedValue, 0);
           const widthPct = Math.max((count / maxCount) * 100, 15);
           const prevCount = i > 0 ? projects.filter(p => p.stage === STAGES[i - 1].id).length : 0;
-          const dropoff = i > 0 && prevCount > 0 ? ((prevCount - count) / prevCount * 100).toFixed(0) : null;
+          const dropoff = i > 0 && prevCount > 0 && count < prevCount ? ((prevCount - count) / prevCount * 100).toFixed(0) : null;
 
           return (
             <div key={stage.id} className="flex items-center gap-4">

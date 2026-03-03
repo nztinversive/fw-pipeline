@@ -12,28 +12,45 @@ export default function ExecutiveView({ projects }: Props) {
 
   return (
     <div className="max-w-5xl mx-auto py-8 px-4">
-      {/* Header */}
-      <div className="text-center mb-8">
-        <h2 className="text-3xl font-bold" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-heading)' }}>
-          Fading West Pipeline
-        </h2>
-        <p className="mt-1" style={{ color: 'var(--text-secondary)' }}>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+      {/* Header with Export */}
+      <div className="flex items-start justify-between mb-8">
+        <div className="flex-1 text-center">
+          <h2 className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-heading)' }}>
+            Fading West Pipeline
+          </h2>
+          <p className="mt-1" style={{ color: 'var(--text-secondary)' }}>{new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</p>
+        </div>
+        <button
+          onClick={() => window.print()}
+          className="no-print px-3 py-1.5 text-xs font-medium transition-colors flex items-center gap-1.5 shrink-0"
+          style={{
+            background: 'var(--bg-input)',
+            color: 'var(--text-secondary)',
+            borderRadius: 'var(--radius-sm)',
+          }}
+          onMouseEnter={e => (e.currentTarget.style.background = 'var(--bg-input-focus)')}
+          onMouseLeave={e => (e.currentTarget.style.background = 'var(--bg-input)')}
+        >
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Export PDF
+        </button>
       </div>
 
       {/* KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
         {[
-          { label: 'Total Pipeline', value: formatCurrency(stats.totalValue), icon: '💰' },
-          { label: 'Active Projects', value: stats.totalProjects.toString(), icon: '📋' },
-          { label: 'In Production', value: stats.stageDistribution.production.count.toString(), icon: '🏗️' },
-          { label: 'Conversion Rate', value: `${stats.conversionRate.toFixed(0)}%`, icon: '📈' },
+          { label: 'Total Pipeline', value: formatCurrency(stats.totalValue) },
+          { label: 'Active Projects', value: stats.totalProjects.toString() },
+          { label: 'In Production', value: stats.stageDistribution.production.count.toString() },
+          { label: 'Conversion Rate', value: `${stats.conversionRate.toFixed(0)}%` },
         ].map(kpi => (
-          <div key={kpi.label} className="glass p-5 text-center">
-            <div className="text-2xl mb-2">{kpi.icon}</div>
-            <div className="text-2xl font-bold" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-primary)' }}>
+          <div key={kpi.label} className="glass p-5">
+            <div className="text-sm mb-1" style={{ color: 'var(--text-muted)' }}>{kpi.label}</div>
+            <div className="text-2xl sm:text-3xl font-bold" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-primary)', letterSpacing: '-1px' }}>
               {kpi.value}
             </div>
-            <div className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>{kpi.label}</div>
           </div>
         ))}
       </div>
@@ -78,15 +95,21 @@ export default function ExecutiveView({ projects }: Props) {
           </h3>
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2">🟢 On Track</span>
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full" style={{ background: 'var(--green)' }} /> On Track
+              </span>
               <span className="font-bold">{projects.filter(p => p.healthStatus === 'on-track').length}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2">🟡 At Risk</span>
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full" style={{ background: 'var(--yellow)' }} /> At Risk
+              </span>
               <span className="font-bold" style={{ color: 'var(--yellow)' }}>{stats.atRisk}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="flex items-center gap-2">🔴 Blocked</span>
+              <span className="flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full" style={{ background: 'var(--red)' }} /> Blocked
+              </span>
               <span className="font-bold" style={{ color: 'var(--red)' }}>{stats.blocked}</span>
             </div>
           </div>

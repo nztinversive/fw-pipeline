@@ -8,11 +8,11 @@ interface Props {
   onClose: () => void;
 }
 
-const audiences: { id: AudienceType; label: string; icon: string; desc: string }[] = [
-  { id: 'team', label: 'Team', icon: '👥', desc: 'Kanban board for daily ops' },
-  { id: 'sales', label: 'Sales', icon: '💼', desc: 'Funnel with conversion metrics' },
-  { id: 'investors', label: 'Investors', icon: '📊', desc: 'Executive dashboard with KPIs' },
-  { id: 'partners', label: 'Partners', icon: '🤝', desc: 'Timeline with milestones' },
+const audiences: { id: AudienceType; label: string; desc: string }[] = [
+  { id: 'team', label: 'Team', desc: 'Kanban board for daily ops' },
+  { id: 'sales', label: 'Sales', desc: 'Funnel with conversion metrics' },
+  { id: 'investors', label: 'Investors', desc: 'Executive dashboard with KPIs' },
+  { id: 'partners', label: 'Partners', desc: 'Timeline with milestones' },
 ];
 
 export default function ShareModal({ open, onClose }: Props) {
@@ -53,7 +53,7 @@ export default function ShareModal({ open, onClose }: Props) {
 
   return (
     <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4" onClick={onClose}>
-      <div className="glass w-full max-w-md p-6" onClick={e => e.stopPropagation()}>
+      <div className="glass w-full max-w-md p-4 sm:p-6" onClick={e => e.stopPropagation()}>
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-xl font-bold" style={{ fontFamily: 'var(--heading-font)', color: 'var(--text-heading)' }}>Share Pipeline</h2>
           <button onClick={onClose} className="text-xl" style={{ color: 'var(--text-secondary)' }}>✕</button>
@@ -74,7 +74,6 @@ export default function ShareModal({ open, onClose }: Props) {
                   border: audience === a.id ? '1px solid var(--accent-border)' : '1px solid transparent',
                 }}
               >
-                <div className="text-lg mb-1">{a.icon}</div>
                 <div className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>{a.label}</div>
                 <div className="text-xs" style={{ color: 'var(--text-muted)' }}>{a.desc}</div>
               </button>
