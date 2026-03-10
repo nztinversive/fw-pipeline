@@ -67,7 +67,7 @@ export interface ShareLink {
   audience: AudienceType;
   viewMode: ViewMode;
   filter?: string;
-  password?: string;
+  passwordProtected: boolean;
   expiresAt?: string;
   createdAt: string;
 }

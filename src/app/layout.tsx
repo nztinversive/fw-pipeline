@@ -1,5 +1,18 @@
 import type { Metadata } from 'next';
+import { Bricolage_Grotesque, Outfit } from 'next/font/google';
 import './globals.css';
+
+const headingFont = Bricolage_Grotesque({
+  subsets: ['latin'],
+  variable: '--font-heading',
+  display: 'swap',
+});
+
+const bodyFont = Outfit({
+  subsets: ['latin'],
+  variable: '--font-body',
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   title: 'FW Pipeline | Fading West',
@@ -9,15 +22,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Outfit:wght@300;400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body className="min-h-screen">{children}</body>
+      <body className={`${headingFont.variable} ${bodyFont.variable} min-h-screen`}>{children}</body>
     </html>
   );
 }

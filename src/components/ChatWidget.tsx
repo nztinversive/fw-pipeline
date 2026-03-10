@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -9,6 +9,27 @@ interface Message {
 
 interface Props {
   onDataChange: () => void;
+}
+
+function renderMessageContent(content: string) {
+  const lines = content.split('\n');
+
+  return lines.map((line, lineIndex) => {
+    const parts = line.split(/(\*\*.*?\*\*)/g);
+
+    return (
+      <Fragment key={`${lineIndex}-${line}`}>
+        {parts.map((part, partIndex) => {
+          if (part.startsWith('**') && part.endsWith('**') && part.length > 4) {
+            return <strong key={`${lineIndex}-${partIndex}`}>{part.slice(2, -2)}</strong>;
+          }
+
+          return <Fragment key={`${lineIndex}-${partIndex}`}>{part}</Fragment>;
+        })}
+        {lineIndex < lines.length - 1 && <br />}
+      </Fragment>
+    );
+  });
 }
 
 export default function ChatWidget({ onDataChange }: Props) {
@@ -38,7 +59,7 @@ export default function ChatWidget({ onDataChange }: Props) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           message: userMsg,
-          history: newMessages.slice(1).slice(-20), // last 20 messages, skip initial greeting
+          history: messages.slice(1).slice(-20), // last 20 prior messages, skip initial greeting
         }),
       });
       const { reply } = await res.json();
@@ -84,12 +105,9 @@ export default function ChatWidget({ onDataChange }: Props) {
                     borderRadius: 'var(--radius-md)',
                     whiteSpace: 'pre-wrap',
                   }}
-                  dangerouslySetInnerHTML={{
-                    __html: m.content
-                      .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-                      .replace(/\n/g, '<br/>'),
-                  }}
-                />
+                >
+                  {renderMessageContent(m.content)}
+                </div>
               </div>
             ))}
             {loading && (

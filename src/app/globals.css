@@ -7,8 +7,6 @@
    Bricolage Grotesque + Outfit
    ============================================ */
 
-@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,500;12..96,600;12..96,700;12..96,800&family=Outfit:wght@300;400;500;600;700&display=swap');
-
 :root {
   --bg-primary: #F9F8F4;
   --bg-secondary: #f1ede6;
@@ -40,8 +38,8 @@
   --radius-md: 14px;
   --radius-lg: 24px;
 
-  --heading-font: 'Bricolage Grotesque', sans-serif;
-  --body-font: 'Outfit', sans-serif;
+  --heading-font: var(--font-heading), sans-serif;
+  --body-font: var(--font-body), sans-serif;
 
   --glass-bg: rgba(255, 255, 255, 0.85);
   --glass-border: #f0ece4;

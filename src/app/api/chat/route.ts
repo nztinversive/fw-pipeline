@@ -5,10 +5,19 @@ import { Stage, Project } from '@/lib/types';
 
 const STAGES_LIST: Stage[] = ['lead', 'qualified', 'design', 'permitting', 'production', 'delivered'];
 
+function toTitleCase(value: string): string {
+  return value
+    .split(/\s+/)
+    .filter(Boolean)
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
 // ─── Keyword-based fallback (original parser) ────────────────────────────────
 
 function parseMessageKeyword(msg: string): { reply: string } {
-  const lower = msg.toLowerCase().trim();
+  const trimmed = msg.trim();
+  const lower = trimmed.toLowerCase();
   const projects = getProjects();
   const stats = computeStats(projects);
 
@@ -49,17 +58,18 @@ function parseMessageKeyword(msg: string): { reply: string } {
     return { reply: `Couldn't find a project matching "${name}". Try using the full project name.` };
   }
 
-  const addMatch = lower.match(/add\s+(?:a\s+)?(?:new\s+)?(?:project)?[:\s]*(.+)/i);
+  const addMatch = trimmed.match(/add\s+(?:a\s+)?(?:new\s+)?(?:project)?[:\s]*(.+)/i);
   if (addMatch && (lower.includes('add') && (lower.includes('unit') || lower.includes('project') || lower.includes('$')))) {
     const desc = addMatch[1];
     const unitMatch = desc.match(/(\d+)\s*unit/i);
     const valueMatch = desc.match(/\$?([\d.]+)\s*[mM]/);
-    const cityMatch = desc.match(/in\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)?)/);
+    const cityMatch = desc.match(/\bin\s+([A-Za-z]+(?:\s+[A-Za-z]+)?)/);
     const stageMatch = desc.match(/(?:in\s+|currently\s+)(lead|qualified|design|permitting|production|delivered)/i);
+    const city = cityMatch ? toTitleCase(cityMatch[1]) : '';
 
     const project = addProject({
-      name: cityMatch ? `${cityMatch[1]} ${unitMatch ? unitMatch[1] + '-Unit' : 'Project'}` : 'New Project',
-      location: { city: cityMatch?.[1] || '', state: '' },
+      name: city ? `${city} ${unitMatch ? unitMatch[1] + '-Unit' : 'Project'}` : 'New Project',
+      location: { city, state: '' },
       unitCount: unitMatch ? parseInt(unitMatch[1]) : 0,
       estimatedValue: valueMatch ? parseFloat(valueMatch[1]) * 1_000_000 : 0,
       stage: (stageMatch?.[1]?.toLowerCase() as Stage) || 'lead',
@@ -179,26 +189,31 @@ Available stages: ${STAGES_LIST.join(', ')}`;
     const toolResults: Array<{ role: 'tool'; tool_call_id: string; content: string }> = [];
 
     for (const tc of choice.message.tool_calls) {
-      if (tc.type !== 'function') continue;
-      const args = JSON.parse(tc.function.arguments);
+      if (tc.type !== 'function') {
+        continue;
+      }
+
+      const args = JSON.parse(tc.function.arguments) as Record<string, unknown>;
       let result = '';
 
       if (tc.function.name === 'move_project') {
+        const projectName = String(args.project_name || '').toLowerCase();
+        const targetStage = args.target_stage as Stage;
         const project = projects.find(p =>
-          p.name.toLowerCase().includes(args.project_name.toLowerCase())
+          p.name.toLowerCase().includes(projectName)
         );
         if (project) {
-          moveProject(project.id, args.target_stage as Stage);
-          result = `Moved "${project.name}" to ${args.target_stage}`;
+          moveProject(project.id, targetStage);
+          result = `Moved "${project.name}" to ${targetStage}`;
         } else {
-          result = `Project "${args.project_name}" not found`;
+          result = `Project "${String(args.project_name || '')}" not found`;
         }
       } else if (tc.function.name === 'add_project') {
         const newProject = addProject({
-          name: args.name,
-          location: { city: args.city || '', state: args.state || '' },
-          unitCount: args.unit_count || 0,
-          estimatedValue: args.estimated_value || 0,
+          name: String(args.name || 'Untitled Project'),
+          location: { city: String(args.city || ''), state: String(args.state || '') },
+          unitCount: Number(args.unit_count || 0),
+          estimatedValue: Number(args.estimated_value || 0),
           stage: (args.stage as Stage) || 'lead',
           priority: (args.priority as Project['priority']) || 'medium',
         });
@@ -213,12 +228,18 @@ Available stages: ${STAGES_LIST.join(', ')}`;
     }
 
     // Send tool results back for final response
+    const assistantToolMessage = {
+      role: 'assistant' as const,
+      content: choice.message.content ?? '',
+      tool_calls: choice.message.tool_calls,
+    };
+
     const followUp = await client.chat.completions.create({
       model: 'gpt-5-mini',
       max_completion_tokens: 1024,
       messages: [
         ...messages,
-        choice.message as { role: 'assistant'; content: string | null },
+        assistantToolMessage,
         ...toolResults,
       ],
       tools,

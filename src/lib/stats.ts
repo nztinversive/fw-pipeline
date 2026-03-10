@@ -10,6 +10,9 @@ export function computeStats(projects: Project[]): PipelineStats {
   const delivered = projects.filter(p => p.stage === 'delivered');
 
   projects.forEach(p => {
+    if (!stageDistribution[p.stage]) {
+      return;
+    }
     stageDistribution[p.stage].count++;
     stageDistribution[p.stage].value += p.estimatedValue;
     totalValue += p.estimatedValue;
